@@ -1,0 +1,49 @@
+.mycurrency {
+    padding: 0px 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+}
+
+.mycurrency h2 {
+    margin: 0;
+    margin-bottom: 12px;
+    text-align: left;
+    color: #3F4C67;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.mycurrency-container-item {
+    width: 100%;
+    margin-top: 12px;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.2px solid #D2D7F5;
+    border-radius: 10px;   
+}
+
+.mycurrency-container-item p {
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.mycurrency-container-item .item-icon {
+    margin-right: 12px;
+    width: 40px;
+    height: 40px;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    background: #5161D4;
+    font-weight: 600;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

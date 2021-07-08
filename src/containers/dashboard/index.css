@@ -1,0 +1,34 @@
+.dashboard {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard h1 {
+    margin: 0;
+    margin-bottom: 24px;
+    text-align: left;
+    color: #3F4C67;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.dashboard-container-up {
+    margin-bottom: 24px;
+    display: flex;
+}
+
+.dashboard-container-down {
+    display: flex;
+}
+
+.dashboard-container-up-right {
+    margin-left: 12px;
+    width: calc(40% - 12px);
+    display: flex;
+    flex-direction: column;
+}

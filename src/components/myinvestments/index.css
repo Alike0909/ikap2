@@ -1,0 +1,81 @@
+.myinvestments {
+    padding: 24px;
+    width: calc(60%);
+    min-height: 328px;
+    border: 0.2px solid #D2D7F5;
+    border-radius: 10px;   
+    display: flex;
+    flex-direction: column; 
+}
+
+.myinvestments h2 {
+    margin: 0;
+    margin-bottom: 24px;
+    text-align: left;
+    color: #3F4C67;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.myinvestments-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.myinvestments-container-title {
+    margin-bottom: 24px;
+    display: flex;
+}
+
+.myinvestments-container-title h4 {
+    margin: 0;
+    text-align: left;
+    color: #979797;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+}
+
+.myinvestments-container-item {
+    position: relative;
+    margin-bottom: 24px;
+    padding: 12px 0;
+    border-bottom: 0.2px solid #D2D7F5;
+    display: flex;
+    align-items: center;
+}
+
+.myinvestments-container-item h4 {
+    margin: 0;
+    z-index: 2;
+    text-align: left;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+    transition: 0.2s linear;
+}
+
+.myinvestments-container-item::before {
+    content: '';
+    position: absolute;
+    left: -2%;
+    z-index: 0;
+    width: 104%;
+    height: 100%;
+    background: #DDE1FF;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    opacity: 0;
+    transition: 0.2s linear;
+}
+
+.myinvestments-container-item:hover {
+    border-bottom: 0.2px solid transparent;
+    transition: 0.2s linear;
+}
+
+.myinvestments-container-item:hover:before {
+    opacity: 1;
+    transition: 0.2s linear;
+}
