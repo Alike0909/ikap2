@@ -1,0 +1,188 @@
+.cash-btn {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    width: 42px;
+    height: 42px;
+    border: 2px solid #5161D4;
+    border-radius: 5px;
+    background: #5161D4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s linear;
+}
+
+.cash-btn svg {
+    fill: white;
+}
+
+.cash-btn:hover {
+    background: #4a58c2;
+    transition: 0.2s linear;
+}
+
+.cash-amount {
+    margin-bottom: 8px;
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cash-amount h4 {
+    margin: 0;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+}
+
+.cash-amount-input {
+    display: flex;
+}
+
+.cash-amount-input input {
+    outline: none !important;
+    margin-top: 12px;
+    padding: 0 !important;
+    height: 21px !important;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 18px;
+    border: none;
+    border-bottom: 1px solid #5161D4;
+}
+
+.ant-input:focus, .ant-input:hover, .ant-input-focused {
+    border-color: #5161D4 !important;
+    box-shadow: none !important;
+}
+
+.cash-amount-warning {
+    margin-top: 6px;
+    min-height: 16px;
+    color: #EB0404;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+}
+
+.cash-operation {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cash-operation h4 {
+    margin: 0;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+}
+
+.cash-operation-checkbox {
+    display: flex;
+}
+
+.cash-operation-checkbox-item {
+    cursor: pointer;
+    margin-top: 12px;
+    margin-right: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.cash-operation-checkbox-item .round-checkbox {
+    margin-right: 6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #979797;
+    display: flex;
+    align-items: center;
+}
+
+.cash-operation-checkbox-item .round-checkbox svg {
+    margin-top: 1px;
+}
+
+.cash-comment {
+    display: flex;
+    flex-direction: column;
+}
+
+.cash-comment h4 {
+    margin: 0;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+}
+
+.cash-comment input {
+    margin-top: 12px;
+    outline: none;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 18px;
+    border: none;
+    border-bottom: 1px solid #5161D4;
+}
+
+.cash-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cash-buttons button {
+    width: calc(50% - 12px);
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid #5161D4;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.cash-buttons button:nth-child(odd) {
+    color: white;
+    background: #5161D4;
+}
+
+.cash-buttons button:nth-child(odd):hover {
+    background: #4a58c2;
+    transition: 0.2s linear;
+}
+
+.cash-buttons button:nth-child(even) {
+    position: relative;
+    color: #5161D4;
+    background: white;
+}
+
+.cash-buttons button:nth-child(even)::after {
+    content: '';
+    top: 2px;
+    left: 2px;
+    position: absolute;
+    opacity: 0;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    border: 1px solid #5161D4;
+    border-radius: 5px;
+}
+
+.cash-buttons button:nth-child(even):hover:after{
+    opacity: 1;
+    transition: 0.2s linear;
+}
+
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: #5161D4 !important;
+    border-right-width: 1px!important;
+}

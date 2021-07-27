@@ -1,0 +1,79 @@
+.transactions {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.transactions h1 {
+    margin: 0;
+    margin-bottom: 24px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    color: #3F4C67;
+}
+
+.transaction-filters {
+    display: flex;
+}
+
+.transaction-filters .ant-select-selector {
+    border-radius: 5px !important;
+}
+
+.transaction-container {
+    margin: 36px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-container-item {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.transaction-container-item .transaction-img {
+    margin-right: 6px;
+    width: 60px;
+    height: 60px;
+}
+
+.transaction-container-item .transaction-img img {
+    margin-top: 6px;
+    width: 100%;
+    height: 100%;
+}
+
+.transaction-container-item .transaction-title {
+    min-width: 420px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.transaction-container-item h4 {
+    margin: 0;
+    margin-bottom: 6px;
+    color: #3F4C67;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.transaction-container-item p {
+    margin: 0;
+    min-height: 19px;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    color: #979797;
+}
+
+.transaction-container-item .transaction-desc {
+    display: flex;
+    flex-direction: column;
+}

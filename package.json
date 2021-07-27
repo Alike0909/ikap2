@@ -7,15 +7,23 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.16.6",
+    "antd-mobile": "^2.3.4",
     "axios": "^0.21.1",
+    "bootstrap": "^5.0.2",
     "firebase": "^8.7.0",
+    "moment": "^2.29.1",
+    "node-expat": "^2.4.0",
     "react": "^17.0.2",
+    "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.2",
     "react-minimal-pie-chart": "^8.2.0",
+    "react-moment": "^1.1.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.0.1"
+    "react-xml-parser": "^1.1.8",
+    "web-vitals": "^1.0.1",
+    "xml2json": "^0.12.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,5 +48,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "proxy": "http://localhost:3000",
+  "devDependencies": {
+    "@types/serialport": "^8.0.2"
   }
 }

@@ -3,6 +3,7 @@ import './index.css'
 
 function Currency(props) {
     const { convert } = props
+    const { currencies } = props
 
     return (
         <div className="currency">

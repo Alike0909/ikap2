@@ -1,7 +1,7 @@
 .myinvestments {
     padding: 24px;
     width: calc(60%);
-    min-height: 328px;
+    /* min-height: 328px; */
     border: 0.2px solid #D2D7F5;
     border-radius: 10px;   
     display: flex;
@@ -78,4 +78,76 @@
 .myinvestments-container-item:hover:before {
     opacity: 1;
     transition: 0.2s linear;
+}
+
+.payments {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-item {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.payment-item p {
+    margin: 0;
+    font-size: 15px;
+}
+
+.payment-item .circle {
+    margin-right: 18px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #5161D4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-item .circle:not(.waiting) {
+    pointer-events: none;
+}
+
+.payment-item .circle svg {
+    margin-top: 2px;
+    fill: #5161D4;
+}
+
+.not-paid .circle {
+    border: 1px solid #979797;
+}
+
+.not-paid p {
+    color: #979797;
+}
+
+.waiting {
+    border: 1px solid #5161D4 !important;
+}
+
+.ant-modal-content {
+    border: 2px solid #5161D4 !important;
+    border-radius: 10px !important;
+}
+
+.ant-modal-header {
+    padding: 36px 36px 0 36px !important;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    border-bottom: none !important;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.ant-modal-title {
+    color: #5161D4;
+    font-weight: 600;
+    font-size: 15px !important;
+}
+
+.ant-modal-body {
+    padding: 0 36px 36px 36px !important;
+    font-family: 'Montserrat', sans-serif !important;
 }

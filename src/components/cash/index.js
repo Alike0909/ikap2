@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { PieChart } from 'react-minimal-pie-chart';
 import './index.css'
 
+import CashButton from '../cashButton'
 
 function Cash(props) {
+    const {db, moment} = props
     const { cash, currency } = props
-    const { convert } = props
+    const { fetchCash, fetchCurrency } = props
+    const { makeTransaction, fetchTransaction } = props
+    const { convert, returnData, thousandSeparator } = props
     
     const colors = ['#F5A623', 'rgba(172, 226, 252)', '#F6C156', 'rgba(172, 226, 252)', '']
 
@@ -40,6 +44,7 @@ function Cash(props) {
                     {dataItems}
                 </div>
             </div>
+            <CashButton db={db} moment={moment} cash={cash} fetchCash={fetchCash} currency={currency} fetchCurrency={fetchCurrency} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} thousandSeparator={thousandSeparator}></CashButton>
         </div>
     );
 }

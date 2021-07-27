@@ -23,6 +23,7 @@
 }
 
 .dashboard-container-down {
+    height: calc(100% - 72px - 382px);
     display: flex;
 }
 
@@ -31,4 +32,10 @@
     width: calc(40% - 12px);
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 479px) {
+    .dashboard {
+        display: none;
+    }
 }

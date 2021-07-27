@@ -1,4 +1,5 @@
 .cash {
+    position: relative;
     margin-left: 36px;
     padding: 24px;
     width: calc(40% - 60px);

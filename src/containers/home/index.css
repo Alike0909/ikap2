@@ -1,3 +1,7 @@
+.home-mobile {
+    display: none;
+}
+
 .ant-layout-sider{
     width: fit-content !important;
     max-width: fit-content !important;
@@ -20,4 +24,18 @@
 .ant-menu-item {
     padding-left: 32px !important;
     padding-right: 6px !important;
+}
+
+.ant-layout-sider-zero-width-trigger {
+    display: none !important;
+}
+
+@media (max-width: 479px) {
+    .home {
+        display: none;
+    }
+
+    .home-mobile {
+        display: block;
+    }
 }

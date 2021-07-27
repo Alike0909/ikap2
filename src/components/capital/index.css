@@ -20,6 +20,8 @@
 .capital-img {
     margin: 24px 0;
     width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .capital-img img {

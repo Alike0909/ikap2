@@ -1,16 +1,20 @@
-import logo from './logo.svg';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import './App.css';
+import { AuthProvider } from './contexts/AuthContext'
 
 import Home from './containers/home'
+import PrivateRoute from './components/PrivateRoute'
+import Login from './containers/login'
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Switch>
-          <Route path={'/'} component={Home} />
-        </Switch>
+        <AuthProvider>
+          <Switch>
+            <Route path={'/'} component={Home} />
+            <Route path="/login" component={Login} />
+          </Switch>
+        </AuthProvider>
       </Router>
     </div>
   );

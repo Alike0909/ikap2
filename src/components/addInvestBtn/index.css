@@ -1,0 +1,14 @@
+.add-invest-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-invest-container input {
+    margin-top: 12px;
+    padding: 12px 24px;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+    color: #3F4C67;
+}
