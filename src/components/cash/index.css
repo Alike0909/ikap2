@@ -27,6 +27,7 @@
 .cash-title {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .cash-title h4 {
@@ -34,13 +35,14 @@
     text-align: left;
     color: #979797;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13px;
     line-height: 18px;
 }
 
 .cash-title-item {
-    margin: 24px 0;
-    width: 50%;
+    margin: 24px 12px;
+    /* width: calc(50% - 6px); */
+    width: fit-content;
     display: flex;
     align-items: flex-start;
 }

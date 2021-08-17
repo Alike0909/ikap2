@@ -29,18 +29,7 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-.mytransaction .add-invest {
-    color: white;
-    background: #5161D4;
-    transition: 0.2s linear;
-}
-
-.mytransaction .add-invest:hover {
-    background: #4a58c2;
-    transition: 0.2s linear;
-}
-
-.mytransaction .do-mytransaction {
+.mytransaction .do-transact {
     position: relative;
     color: #5161D4;
     background: transparent;
@@ -50,7 +39,7 @@
     transition: 0.2s linear;
 }
 
-.mytransaction .do-mytransaction::after {
+.mytransaction .do-transact::after {
     content: '';
     /* top: 2px; */
     /* left: 2px; */
@@ -62,7 +51,7 @@
     border-radius: 5px;
 }
 
-.mytransaction .do-mytransaction:hover:after{
+.mytransaction .do-transact:hover:after{
     opacity: 1;
     transition: 0.2s linear;
 }

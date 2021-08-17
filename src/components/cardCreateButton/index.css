@@ -1,0 +1,30 @@
+/* .card-create-container {
+    margin-top: 12px;
+} */
+
+.card-create-container-item {
+    margin-top: 12px;
+    display: flex;
+}
+
+.card-create-container-item button {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 6px 0;
+    width: 80%;
+    border: 2px solid #5161D4;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    background: #5161D4;
+    transition: 0.2s linear;
+}
+
+.card-create-container-item button:hover {
+    background: #4a58c2;
+    transition: 0.2s linear;
+}

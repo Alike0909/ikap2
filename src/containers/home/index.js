@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, message } from 'antd';
 import { TabBar } from 'antd-mobile';
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router';
@@ -13,7 +13,9 @@ import Dashboard from '../dashboard'
 import Investments from '../investments'
 import Transactions from '../transactions'
 import Login from '../login'
+import SignUp from '../register'
 import PrivateRoute from '../../components/PrivateRoute'
+import { useAuth } from '../../contexts/AuthContext'
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -26,12 +28,22 @@ function Home() {
     const [currency, setCurrency] = useState([])
     const [invest, setInvest] = useState([])
     const [transaction, setTransaction] = useState([])
+    const [card, setCard] = useState([])
     const [convertData, setConvertData] = useState([])
     const currencies = [1, convertData[10]?.description, convertData[11]?.description, convertData[24]?.description, convertData[17]?.description, convertData[32]?.description, convertData[15]?.description, 24500]
     
+    const { currentUser } = useAuth()
+
+    function callback(data) {
+        // sessionStorage.setItem('currentMenuItem', JSON.stringify([`${key}`]));
+        const form = [`${data.key}`]
+        sessionStorage.setItem('currentMenuItem', JSON.stringify(form));
+    }
+
     async function fetchCash() {
         let data = await db.collection("cash").get()
         setCash(data.docs)
+        // console.log((data.docs).data())
     }
 
     async function fetchCurrency() {
@@ -45,8 +57,13 @@ function Home() {
     }
 
     async function fetchTransaction() {
-        let data = await db.collection("transaction").get()
+        let data = await db.collection("transaction").orderBy('date', 'desc').get()
         setTransaction(data.docs)
+    }
+
+    async function fetchCard() {
+        let data = await db.collection("card").get()
+        setCard(data.docs)
     }
 
     useEffect(() => {
@@ -54,6 +71,7 @@ function Home() {
         fetchCurrency()
         fetchInvest()
         fetchTransaction()
+        fetchCard()
         // axios.get(`https://cors-anywhere.herokuapp.com/corsdemo/http://api.exchangeratesapi.io/v1/latest?access_key=329ed469fb9d0b86f01272b4ba881944/`).then(res => console.log(res.data.rates))
         axios.get(`https://api.factmaven.com/xml-to-json/?xml=https://nationalbank.kz/rss/rates_all.xml`).then(res => setConvertData(res.data?.rss.channel.item))
     }, [])
@@ -84,7 +102,11 @@ function Home() {
     var getAllInvested = function (str) {
         var temp = []
         for (var i in str) {
-            temp.push(str[i].data().invested);
+            if (str[i].data().user == currentUser.email) {
+                if (str[i].data().status == "pending") {
+                    temp.push(str[i].data().invested);
+                }
+            }
         }
         return temp.reduce((a, b) => a + b, 0)
     };
@@ -92,28 +114,39 @@ function Home() {
     var getAllCurrency = function (str) {
         var temp = []
         for (var i in str) {
-            temp.push(str[i].data().invested * convert(i, 0));
+            if (str[i].data().user == currentUser.email) {
+                temp.push(str[i].data().invested * convert(str[i].data().value, 0));
+            }
         }
+        // console.log(convert(1, 0))
         return temp.reduce((a, b) => a + b, 0)
     };
 
     var getAllIncome = function (str) {
         var temp = []
         for (var i in str) {
-            temp.push(str[i].data().invested * Number(str[i].data().profitability.slice(0, -1)) / 1200);
+            if (str[i].data().user == currentUser.email) {
+                if (str[i].data().status == "pending") {
+                    temp.push(str[i].data().invested * Number(str[i].data().profitability.slice(0, -1)) / 1200);
+                }
+            }
         }
         return temp.reduce((a, b) => a + b, 0)
     };
 
     const returnData = (id) => {
         for (let i in currency) {
-            if (currency[i].data().value == id) {
-                return { id: currency[i].id, data: currency[i].data(), name: 'currency' }
+            if (currency[i].data().user == currentUser.email) {
+                if (currency[i].data().value == id) {
+                    return { id: currency[i].id, data: currency[i].data(), name: 'currency' }
+                }
             }
         }
         for (let i in cash) {
-            if (cash[i].data().value == id) {
-                return { id: cash[i].id, data: cash[i].data(), name: 'cash' }
+            if (cash[i].data().user == currentUser.email) {
+                if (cash[i].data().value == id) {
+                    return { id: cash[i].id, data: cash[i].data(), name: 'cash' }
+                }
             }
         }
     }
@@ -130,6 +163,18 @@ function Home() {
         });
     }
 
+    const success = (content) => {
+        message.success({
+            content: content,
+            className: 'custom-class',
+            style: {
+                marginTop: '24px',
+                marginLeft: '54vw'
+            },
+            duration: 6
+        });
+    };
+
     return (
         <>
         <div className="home">
@@ -145,7 +190,7 @@ function Home() {
                     }}
                     style={{width: '84px', maxWidth: '84px', minWidth: '0'}}
                 >
-                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} style={{ background: '#D2D7F5', height: '100vh', paddingTop: '144px' }}>
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={JSON.parse(sessionStorage.getItem("currentMenuItem"))} style={{ background: '#D2D7F5', height: '100vh', paddingTop: '144px' }} onSelect={callback}>
                         <Menu.Item key="1" icon={
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M22 21H2V11C2 9.89543 2.89543 9 4 9H8V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V7H20C21.1046 7 22 7.89543 22 9V21ZM16 9V19H20V9H16ZM10 4V19H14V4H10ZM4 11V19H8V11H4Z" fill="#3F4C67" />
@@ -172,10 +217,11 @@ function Home() {
                 <Layout style={{ background: '#D2D7F5' }}>
                     <Content style={{ padding: '24px 24px 24px 12px',}}>
                         <div className="site-layout-background" style={{ height: 'calc(100vh - 48px)', background: '#fff', borderRadius: '10px' }}>
-                            <PrivateRoute exact path={'/'} component={() => <Dashboard db={db} moment={moment} fetchCash={fetchCash} fetchCurrency={fetchCurrency} fetchInvest={fetchInvest} fetchTransaction={fetchTransaction} cash={cash} invest={invest} currency={currency} currencies={currencies} convert={convert} makeTransaction={makeTransaction} getAllInvested={getAllInvested} getAllCurrency={getAllCurrency} getAllIncome={getAllIncome} returnData={returnData} thousandSeparator={thousandSeparator}/>}/>
-                            <PrivateRoute exact path={'/investments'} component={Investments}/>
-                            <PrivateRoute exact path={'/transactions'} component={() => <Transactions db={db} fetchTransaction={fetchTransaction} transaction={transaction} thousandSeparator={thousandSeparator}></Transactions>} />
+                            <PrivateRoute exact path={'/'} component={() => <Dashboard db={db} moment={moment} fetchCash={fetchCash} fetchCurrency={fetchCurrency} fetchInvest={fetchInvest} fetchTransaction={fetchTransaction} fetchCard={fetchCard} card={card} cash={cash} invest={invest} currency={currency} currencies={currencies} convert={convert} makeTransaction={makeTransaction} getAllInvested={getAllInvested} getAllCurrency={getAllCurrency} getAllIncome={getAllIncome} returnData={returnData} thousandSeparator={thousandSeparator} success={success}/>}/>
+                            <PrivateRoute exact path={'/investments'} component={() => <Investments db={db} moment={moment} currentUser={currentUser.email} cash={cash} fetchCash={fetchCash} invest={invest} fetchInvest={fetchInvest} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} thousandSeparator={thousandSeparator}></Investments>}/>
+                            <PrivateRoute exact path={'/transactions'} component={() => <Transactions db={db} currentUser={currentUser.email} fetchTransaction={fetchTransaction} transaction={transaction} thousandSeparator={thousandSeparator}></Transactions>} />
                             <Route exact path={'/login'} component={Login} />
+                            <Route exact path={'/signup'} component={SignUp} />
                         </div>
                     </Content>
                 </Layout>
@@ -187,9 +233,10 @@ function Home() {
                     <Content>
                         <div className="site-layout-background" style={{ background: '#fff', borderRadius: '10px' }}>
                             <PrivateRoute exact path={'/'} component={() => <Dashboard db={db} moment={moment} fetchCash={fetchCash} fetchCurrency={fetchCurrency} fetchInvest={fetchInvest} fetchTransaction={fetchTransaction} cash={cash} invest={invest} currency={currency} currencies={currencies} convert={convert} makeTransaction={makeTransaction} getAllInvested={getAllInvested} getAllCurrency={getAllCurrency} getAllIncome={getAllIncome} returnData={returnData} thousandSeparator={thousandSeparator} />} />
-                            <PrivateRoute exact path={'/investments'} component={Investments} />
+                            <PrivateRoute exact path={'/investments'} component={() => <Investments db={db} moment={moment} cash={cash} fetchCash={fetchCash} invest={invest} fetchInvest={fetchInvest} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} thousandSeparator={thousandSeparator}></Investments>} />
                             <PrivateRoute exact path={'/transactions'} component={() => <Transactions db={db} fetchTransaction={fetchTransaction} transaction={transaction} thousandSeparator={thousandSeparator}></Transactions>} />
                             <Route exact path={'/login'} component={Login} />
+                            <Route exact path={'/signup'} component={() => <SignUp db={db}></SignUp>} />
                         </div>
                     </Content>
                 </Layout>

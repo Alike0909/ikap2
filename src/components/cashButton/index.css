@@ -182,6 +182,15 @@
     transition: 0.2s linear;
 }
 
+/* .cash-amount-input .ant-select-selector { */
+    /* border: none !important; */
+/* } */
+
+.ant-select-selector {
+    /* border-color: #5161D4 !important; */
+    border-radius: 5px !important;
+}
+
 .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
     border-color: #5161D4 !important;
     border-right-width: 1px!important;

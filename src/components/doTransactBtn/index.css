@@ -1,0 +1,80 @@
+.do-transact-container {
+    margin-top: 28px;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn { 
+    color: #5161D4;
+}
+
+.ant-tabs-tab:hover {
+    color: #5161D4;
+}
+
+.round {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #5161D4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.round svg {
+    fill: #5161D4;
+}
+
+.do-convert-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.do-convert-container h4 {
+    margin: 0;
+    margin-bottom: 12px;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+}
+
+.convert-info h4 {
+    margin: 0;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+}
+
+.convert-info-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.do-transact-container-item {
+    display: flex;
+}
+
+.do-transact-container-item button {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: underline;
+}
+
+.do-transact-container-item button:hover {
+    color: #5161D4;
+}
+
+.transact-to-another-container-item h4 {
+    margin: 0;
+    margin-bottom: 12px;
+    color: #3F4C67;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+}

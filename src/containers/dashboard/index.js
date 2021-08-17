@@ -12,11 +12,11 @@ import Cash from '../../components/cash'
 
 function Dashboard(props) {
     const { db, moment } = props
-    const { fetchCash, fetchCurrency, fetchInvest } = props
-    const { cash, invest, currency, currencies } = props
+    const { fetchCash, fetchCurrency, fetchInvest, fetchCard } = props
+    const { cash, invest, currency, currencies, card } = props
     const { getAllInvested, getAllCurrency, getAllIncome, returnData } = props
     const { makeTransaction, fetchTransaction } = props
-    const { thousandSeparator, convert } = props
+    const { thousandSeparator, convert, success } = props
 
     const [error, setError] = useState()
     const { currentUser, logout } = useAuth()
@@ -45,16 +45,16 @@ function Dashboard(props) {
                 </button>
             </div>
             <div className="dashboard-container-up">
-                <Capital cash={cash} invest={invest} currency={currency} getAllInvested={getAllInvested} getAllCurrency={getAllCurrency} getAllIncome={getAllIncome} thousandSeparator={thousandSeparator}></Capital>
+                <Capital db={db} moment={moment} currentUser={currentUser.email} cash={cash} invest={invest} currency={currency} card={card} fetchCard={fetchCard} getAllInvested={getAllInvested} getAllCurrency={getAllCurrency} getAllIncome={getAllIncome} returnData={returnData} thousandSeparator={thousandSeparator} success={success}></Capital>
                 <Currency convert={convert} currencies={currencies}></Currency>
                 <div className="dashboard-container-up-right">
-                    <MyTransaction db={db} moment={moment} cash={cash} fetchCash={fetchCash} fetchInvest={fetchInvest} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} thousandSeparator={thousandSeparator}></MyTransaction>
-                    <MyCurrency currency={currency} convert={convert} thousandSeparator={thousandSeparator}></MyCurrency>
+                    <MyTransaction db={db} moment={moment} currentUser={currentUser.email} cash={cash} fetchCash={fetchCash} currency={currency} fetchCurrency={fetchCurrency} fetchInvest={fetchInvest} card={card} fetchCard={fetchCard} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} convert={convert} thousandSeparator={thousandSeparator} success={success}></MyTransaction>
+                    <MyCurrency db={db} currentUser={currentUser.email} currency={currency} fetchCurrency={fetchCurrency} convert={convert} returnData={returnData} thousandSeparator={thousandSeparator} success={success}></MyCurrency>
                 </div>
             </div>
             <div className="dashboard-container-down">
-                <MyInvestments db={db} moment={moment} cash={cash} fetchCash={fetchCash} invest={invest} fetchInvest={fetchInvest} fetchTransaction={fetchTransaction} makeTransaction={makeTransaction} thousandSeparator={thousandSeparator}></MyInvestments>
-                <Cash db={db} moment={moment} cash={cash} fetchCash={fetchCash} currency={currency} fetchCurrency={fetchCurrency} fetchTransaction={fetchTransaction} convert={convert} makeTransaction={makeTransaction} returnData={returnData} thousandSeparator={thousandSeparator}></Cash>
+                <MyInvestments db={db} moment={moment} currentUser={currentUser.email} cash={cash} fetchCash={fetchCash} invest={invest} fetchInvest={fetchInvest} fetchTransaction={fetchTransaction} makeTransaction={makeTransaction} returnData={returnData} thousandSeparator={thousandSeparator} success={success}></MyInvestments>
+                <Cash db={db} moment={moment} currentUser={currentUser.email} cash={cash} fetchCash={fetchCash} currency={currency} fetchCurrency={fetchCurrency} invest={invest} getAllInvested={getAllInvested} fetchTransaction={fetchTransaction} convert={convert} makeTransaction={makeTransaction} returnData={returnData} thousandSeparator={thousandSeparator} success={success}></Cash>
             </div>
         </div>
     );

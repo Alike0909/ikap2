@@ -12,3 +12,27 @@
     line-height: 17px;
     color: #3F4C67;
 }
+
+.add-invest {
+    color: white;
+    background: #5161D4;
+    transition: 0.2s linear;
+}
+
+.add-invest:hover {
+    background: #4a58c2;
+    transition: 0.2s linear;
+}
+
+.myinvestments-container .add-invest {
+    margin: auto;
+    padding: 24px;
+    width: 100%;
+    border: 0.2px dashed #D2D7F5;
+    border-radius: 10px; 
+    color: black;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -3,11 +3,12 @@ import { Modal, Select, Input } from 'antd';
 import './index.css'
 
 function AddInvestBtn(props) {
-    const { db, moment } = props
-    const { cash } = props
+    const { db } = props
+    const { cash, moment } = props
+    const { currentUser } = props
     const { fetchCash, fetchInvest } = props
     const { makeTransaction, fetchTransaction } = props
-    const { thousandSeparator } = props
+    const { returnData, thousandSeparator, success } = props
 
     const [post, setPost] = useState({
         name: ``, 
@@ -18,7 +19,9 @@ function AddInvestBtn(props) {
         additionals: ``, 
         invested: ``, 
         sign: '₸', 
-        payments: [] 
+        payments: [] ,
+        status: `pending`,
+        user: currentUser,
     })
 
     const [history, setHistory] = useState({
@@ -28,6 +31,7 @@ function AddInvestBtn(props) {
         amount: ``,
         sign: ``,
         converted_amount: ``,
+        user: currentUser,
     })
 
     const [warning, setWarning] = useState(``)
@@ -51,7 +55,8 @@ function AddInvestBtn(props) {
 
             db.collection("investments").add({
                 ...post,
-                payments: tempPayments
+                payments: tempPayments,
+                // user: currentUser
             })
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
@@ -60,8 +65,8 @@ function AddInvestBtn(props) {
                 console.error("Error adding document: ", error);
             });
 
-            db.collection("cash").doc("dLewcZ1LeHAqLzGeyc08").update({
-                "invested": Number(cash[0].data().invested) - Number(post.invested),
+            db.collection("cash").doc(returnData(0).id).update({
+                "invested": Number(returnData(0)?.data.invested) - Number(post.invested),
             })
             .then(() => {
                 console.log("Document FROM successfully updated!");
@@ -70,7 +75,8 @@ function AddInvestBtn(props) {
             makeTransaction({ ...history, amount: post.invested, sign: post.sign })
 
             setIsModalVisible(false);
-            setPost({ name: ``, type: ``, term: ``, profitability: ``, providing: ``, additionals: ``, invested: 0, sign: '₸', payments: [] })
+            success(`Новый Инвестиционный проект: ${post.name}!`)
+            setPost({ name: ``, type: ``, term: ``, profitability: ``, providing: ``, additionals: ``, invested: 0, sign: '₸', payments: [], })
             setHistory({ amount: ``, sign: ``})
             fetchTransaction()
             fetchCash()
@@ -84,14 +90,14 @@ function AddInvestBtn(props) {
 
     const onChange = (event) => {
         if (event.target.name == "invested") {
-            if (Number(event.target.value) <= Number(cash[0]?.data().invested)) {
+            if (Number(event.target.value) <= Number(returnData(0)?.data.invested)) {
                 setPost(prev => ({
                     ...prev,
                     [event.target.name]: Number(event.target.value)
                 }))
                 setWarning(``)
             } else {
-                setWarning(`Недостаточно средств! Доступно: ${thousandSeparator(cash[0]?.data().invested)} ${cash[0]?.data().sign}`)
+                setWarning(`Недостаточно средств! Доступно: ${thousandSeparator(returnData(0)?.data.invested)} ${returnData(0)?.data.sign}`)
             }
         } else {
             setPost(prev => ({
@@ -108,8 +114,8 @@ function AddInvestBtn(props) {
                 <div className="add-invest-container">
                     <Input value={post.name} name="name" onChange={onChange} placeholder="Имя проекта"/>
                     <Input value={post.type} name="type" onChange={onChange} placeholder="Инструмент"/>
-                    <Input value={post.term} name="term" onChange={onChange} placeholder="Срок"/>
-                    <Input value={post.profitability} name="profitability" onChange={onChange} placeholder="Ставка"/>
+                    <Input value={post.term} name="term" onChange={onChange} placeholder="Срок, пример: 3, 6, 12"/>
+                    <Input value={post.profitability} name="profitability" onChange={onChange} placeholder="Ставка (%)"/>
                     <Input value={post.providing} name="providing" onChange={onChange} placeholder="Обеспечение"/>
                     <Input value={post.additionals} name="additionals" onChange={onChange} placeholder="Доп. условия"/>
                     <Input value={post.invested} name="invested" onChange={onChange} placeholder="Сумма"/>

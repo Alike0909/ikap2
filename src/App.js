@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 
 import Home from './containers/home'
-import PrivateRoute from './components/PrivateRoute'
 import Login from './containers/login'
 
 function App() {

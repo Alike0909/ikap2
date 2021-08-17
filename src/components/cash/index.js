@@ -3,23 +3,44 @@ import { PieChart } from 'react-minimal-pie-chart';
 import './index.css'
 
 import CashButton from '../cashButton'
+import CashCreateButton from '../cashCreateButton';
 
 function Cash(props) {
     const {db, moment} = props
-    const { cash, currency } = props
+    const { currentUser } = props
+    const { cash, currency, invest, getAllInvested } = props
     const { fetchCash, fetchCurrency } = props
     const { makeTransaction, fetchTransaction } = props
-    const { convert, returnData, thousandSeparator } = props
+    const { convert, returnData, thousandSeparator, success } = props
+    const [types, setTypes] = useState([])
+
+    async function fetchTypes() {
+        let data = await db.collection("currency_types").get()
+        setTypes(data.docs)
+    }
     
-    const colors = ['#F5A623', 'rgba(172, 226, 252)', '#F6C156', 'rgba(172, 226, 252)', '']
+    const matchType = (obj) => {
+        for (let i in types) {
+            if (types[i].data().value == obj) {
+                return types[i].data().color
+            }
+        }
+    }
 
     const data = []
     for (let i in cash) {
-        data.push({ title: cash[i].data().name, value: cash[i].data().invested, color: '#5161D4', invested: `${cash[i].data().invested} ${cash[i].data().sign}`})
+        if (cash[i].data().user == currentUser){
+            data.push({ title: cash[i].data().name, value: cash[i].data().invested, color: '#41E24B', invested: `${(cash[i].data().invested).toFixed(2)} ${cash[i].data().sign}`})
+        }
     }
+
     for (let i in currency) {
-        data.push({ title: currency[i].data().name, value: currency[i].data().invested * convert(currency[i].data().value, 0), color: colors[i], invested: `${currency[i].data().invested} ${currency[i].data().sign}` })
+        if (currency[i].data().user == currentUser) {
+            data.push({ title: currency[i].data().name, value: currency[i].data().invested * convert(currency[i].data().value, 0), color: matchType(currency[i].data().value), invested: `${(currency[i].data().invested).toFixed(2)} ${currency[i].data().sign}` })
+        }
     }
+
+    data.push({ title: 'Инвестировано', value: getAllInvested(invest), color: '#5161D4', invested: `${getAllInvested(invest)} ₸` })
 
     const dataItems = data.map((item, i) => 
         <div className="cash-title-item" key={i}>
@@ -31,20 +52,43 @@ function Cash(props) {
         </div>
     )
 
+    useEffect(() => {
+        fetchTypes()
+    }, [])
+
     return (
         <div className="cash">
             <h2>Собственные средства</h2>
-            <div className="cash-container">
-                <PieChart
-                    data={data}
-                    style={{width: '200px', height: '200px', marginRight: '48px'}}
-                    lineWidth={42}
-                />
-                <div className="cash-title">
-                    {dataItems}
+            {data.length != 1 ?
+                <div className="cash-container">
+                    <PieChart
+                        data={data}
+                        style={{width: '200px', height: '200px', marginRight: '48px'}}
+                        lineWidth={42}
+                    />
+                    <div className="cash-title">
+                        {dataItems}
+                    </div>
                 </div>
-            </div>
-            <CashButton db={db} moment={moment} cash={cash} fetchCash={fetchCash} currency={currency} fetchCurrency={fetchCurrency} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} thousandSeparator={thousandSeparator}></CashButton>
+                :
+                <div className="cash-container">
+                    <PieChart
+                        data={[
+                            { title: '', value: 360, color: '#5161D4' },
+                            { title: '', value: 240, color: '#F5A623' },
+                            { title: '', value: 60, color: '#F6C156' },
+                        ]}
+                        style={{ width: '200px', height: '200px', marginRight: '48px', opacity: '0.4' }}
+                        lineWidth={42}
+                    />
+                    <CashCreateButton db={db} currentUser={currentUser} fetchCash={fetchCash} success={success}></CashCreateButton>
+                </div>
+            }
+            {data.length != 1 ?
+                <CashButton db={db} moment={moment} currentUser={currentUser} cash={cash} fetchCash={fetchCash} currency={currency} fetchCurrency={fetchCurrency} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} thousandSeparator={thousandSeparator} success={success}></CashButton>
+                :
+                ''
+            }
         </div>
     );
 }

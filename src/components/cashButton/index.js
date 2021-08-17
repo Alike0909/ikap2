@@ -4,10 +4,11 @@ import './index.css'
 
 function CashButton(props) {
     const {db, moment} = props
+    const { currentUser } = props
     const {cash, currency} = props
     const {fetchCash, fetchCurrency} = props
     const { makeTransaction, fetchTransaction } = props
-    const {returnData, thousandSeparator} = props
+    const {returnData, thousandSeparator, success} = props
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [operation, setOperation] = useState(true)
@@ -25,6 +26,7 @@ function CashButton(props) {
         sign: ``,
         converted_amount: ``,
         comment: ``,
+        user: currentUser,
     })
 
     const showModal = () => {
@@ -32,32 +34,39 @@ function CashButton(props) {
     }
 
     const handleOk = () => {
-        if (warning == null || warning == ``) {
-            operation ?
-            db.collection(currentCurrency.name).doc(currentCurrency.id).update({
-                "invested": Number(currentCurrency.data.invested) + Number(amount),
-            })
-            .then(() => {
-                console.log("Document TO successfully updated!");
-            })
-            :
-            db.collection(currentCurrency.name).doc(currentCurrency.id).update({
-                "invested": Number(currentCurrency.data.invested) - Number(amount),
-            })
-            .then(() => {
-                console.log("Document FROM successfully updated!");
-            })
+        if (amount > 0) {
+            if (warning == null || warning == ``) {
+                operation ?
+                db.collection(currentCurrency.name).doc(currentCurrency.id).update({
+                    "invested": Number(currentCurrency.data.invested) + Number(amount),
+                })
+                .then(() => {
+                    console.log("Document TO successfully updated!");
+                })
+                :
+                db.collection(currentCurrency.name).doc(currentCurrency.id).update({
+                    "invested": Number(currentCurrency.data.invested) - Number(amount),
+                })
+                .then(() => {
+                    console.log("Document FROM successfully updated!");
+                })
+    
+                operation ?
+                makeTransaction({ ...history, type: 3, name: 'Пополнение', amount: Number(amount), sign: currentCurrency.data.sign, comment: currentCurrency.data.name })
+                :
+                makeTransaction({ ...history, type: 4, name: 'Снятие', amount: Number(amount), sign: currentCurrency.data.sign, comment: currentCurrency.data.name })
+    
+                setIsModalVisible(false)
+                setHistory({ type: ``, name: ``, amount: ``, sign: ``, comment: `` })
+                fetchTransaction()
+                fetchCash()
+                fetchCurrency()
 
-            operation ?
-            makeTransaction({ ...history, type: 3, name: 'Пополнение', amount: Number(amount), sign: currentCurrency.data.sign, comment: currentCurrency.data.name })
-            :
-            makeTransaction({ ...history, type: 4, name: 'Снятие', amount: Number(amount), sign: currentCurrency.data.sign, comment: currentCurrency.data.name })
-
-            setIsModalVisible(false)
-            setHistory({ type: ``, name: ``, amount: ``, sign: ``, comment: `` })
-            fetchTransaction()
-            fetchCash()
-            fetchCurrency()
+                operation ?
+                success(`Пополнение ${currentCurrency.data.name} на сумму ${amount} ${currentCurrency.data.sign}`)
+                :
+                success(`Снятие ${currentCurrency.data.name} на сумму ${amount} ${currentCurrency.data.sign}`)
+            }
         }
     }
 
@@ -98,11 +107,17 @@ function CashButton(props) {
     }
  
     const cashOptions = cash.map((item, i) =>
-        <Option amount={item.data().invested} sign={item.data().sign} value={item.data().value} key={item.data().value}>{item.data().name} ({item.data().sign})</Option>
+        item.data().user === currentUser ?
+            <Option amount={item.data().invested} sign={item.data().sign} value={item.data().value} key={item.data().value}>{item.data().name} ({item.data().sign})</Option>
+            :
+            ''
     )
 
     const currencyOptions = currency.map((item, i) =>
+        item.data().user === currentUser ?
         <Option amount={item.data().invested} sign={item.data().sign} value={item.data().value} key={item.data().value}>{item.data().name} ({item.data().sign})</Option>
+        :
+        ''
     )
 
     return (
@@ -116,8 +131,8 @@ function CashButton(props) {
                 <div className="cash-amount">
                     <h4>Сумма</h4>
                     <div className="cash-amount-input">
-                        <Input value={amount} onChange={handleChangeAmount} style={{width: '180px'}}/>
-                        <Select defaultValue="Тенге (₸)" style={{ width: 120, marginLeft: '12px', border: '1px solid #5161D4', borderRadius: '2px', color: '#3F4C67' }} onChange={handleChangeCurrency}>
+                        <Input value={amount} onChange={handleChangeAmount} style={{width: '230px', textAlign: 'right'}}/>
+                        <Select defaultValue="Тенге (₸)" style={{ width: 120, marginLeft: '12px', color: '#3F4C67' }} onChange={handleChangeCurrency}>
                             {cashOptions}
                             {currencyOptions}
                         </Select>
@@ -149,7 +164,7 @@ function CashButton(props) {
                 </div>
                 <div className="cash-comment">
                     <h4>Комментарий</h4>
-                    <Input value={comment} onChange={handleChangeComment} style={{ width: '312px' }} />
+                    <Input value={comment} onChange={handleChangeComment} style={{ width: '364px' }} />
                 </div>
                 <div className="cash-buttons">
                     <button onClick={handleOk}>Выполнить</button>

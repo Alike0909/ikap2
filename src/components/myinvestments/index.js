@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { Modal } from 'antd';
 import './index.css'
 
+import AddInvestBtn from '../addInvestBtn'
+
 function MyInvestments(props) {
     const {db, moment} = props
+    const { currentUser } = props
     const {cash, invest} = props
     const {fetchCash, fetchInvest} = props
     const { makeTransaction, fetchTransaction } = props
-    const {thousandSeparator} = props
+    const { returnData, thousandSeparator, success } = props
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [title, setTitle] = useState('')
     const [payments, setPayments] = useState([])
     const [currentInvest, setCurrentInvest] = useState(0)
     const [investData, setInvestData] = useState([])
+    const [flag, setFlag] = useState(false)
 
     const [history, setHistory] = useState({
         type: 5,
@@ -23,6 +27,7 @@ function MyInvestments(props) {
         sign: ``,
         converted_amount: ``,
         comment: ``,
+        user: currentUser,
     })
 
     const fetchPayments = () => {
@@ -46,37 +51,50 @@ function MyInvestments(props) {
     };
 
     const paidAction = (month) => {
-        investData.payments[month].paid = !investData.payments[month].paid
-        db.collection("investments").doc(invest[currentInvest].id).update({
-            "payments": investData.payments
-        })
-        .then(() => {
-            console.log("Document FROM successfully updated!");
-        })
+        if (investData.payments[month].paid == false) {
+            investData.payments[month].paid = true
+            db.collection("investments").doc(invest[currentInvest].id).update({
+                "payments": investData.payments
+            })
+            .then(() => {
+                console.log("Document FROM successfully updated!");
+            })
 
-        investData.payments[month].income ?
-        db.collection("cash").doc("dLewcZ1LeHAqLzGeyc08").update({
-            "invested": Number(cash[0].data().invested) + Number(investData.payments[month].income),
-        })
-        .then(() => {
-            console.log("Document successfully updated!");
-        })
-        :
-        db.collection("cash").doc("dLewcZ1LeHAqLzGeyc08").update({
-            "invested": Number(cash[0].data().invested) + Number(investData.payments[month].base),
-        })
-        .then(() => {
-            console.log("Document successfully updated!");
-        })
+            investData.payments[month].income ?
+            db.collection("cash").doc(returnData(0).id).update({
+                "invested": Number(returnData(0).data.invested) + Number(investData.payments[month].income),
+            })
+            .then(() => {
+                console.log("Document successfully updated!");
+            })
+            :
+            db.collection("cash").doc(returnData(0).id).update({
+                "invested": Number(returnData(0).data.invested) + Number(investData.payments[month].base),
+            })
+            .then(() => {
+                console.log("Document successfully updated!");
+            })
 
-        makeTransaction({ ...history, amount: Number(investData.payments[month].income), sign: `₸`, comment: title})
+            investData.payments[month].base ?
+                db.collection("investments").doc(invest[currentInvest].id).update({
+                    "status": "finished"
+                })
+                .then(() => {
+                    console.log("Document FROM successfully updated!");
+                })
+                :
+                console.log("not finished")
 
-        setHistory({ type: ``, name: ``, amount: ``, sign: ``, comment: `` })
-        fetchTransaction()
-        setInvestData([])
-        fetchCash()
-        fetchInvest()
-        fetchPayments()
+            makeTransaction({ ...history, amount: Number(investData.payments[month].income), sign: `₸`, comment: title})
+
+            setHistory({ type: ``, name: ``, amount: ``, sign: ``, comment: `` })
+            fetchTransaction()
+            setInvestData([])
+            fetchCash()
+            fetchInvest()
+            fetchPayments()
+            success(`Вы получили дивиденды от ${invest[currentInvest].data.name} в размере ${investData.payments[month].income}`)
+        }
     }
 
     const paymentItems = payments?.map((item, i) =>
@@ -92,7 +110,7 @@ function MyInvestments(props) {
                     </svg>
                 </div>
                 <p style={{ width: '35%' }}>Основной долг</p>
-                <p style={{ width: '30%' }}>{thousandSeparator(item.base)} ₸</p>
+                <p style={{ width: '30%' }}>{thousandSeparator((item.base).toFixed(0))} ₸</p>
                 {item.paid ?
                     <p style={{ color: '#F2A04F' }}>Получено</p>
                     :
@@ -111,7 +129,7 @@ function MyInvestments(props) {
                     </svg>
                 </div>
                 <p style={{ width: '35%' }}>{i + 1} месяц</p>
-                <p style={{ width: '30%' }}>{thousandSeparator(item.income)} ₸</p>
+                <p style={{ width: '30%' }}>{thousandSeparator((item.income).toFixed(0))} ₸</p>
                 {item.paid ?
                     <p style={{ color: '#F2A04F' }}>Получено</p>
                     :
@@ -121,13 +139,29 @@ function MyInvestments(props) {
     )
 
     const investItems = invest.map((item, i) => 
-        <div className="myinvestments-container-item" key={i} style={i > 2 ? { display: 'none' } : { display: 'flex' }} onClick={() => showModal(item.data(), i)}>
-            <h4 style={{ width: '25%', color: '#3F4C67' }}>{item.data().name}</h4>
-            <h4 style={{ width: '20%', color: '#F2A04F' }}>{item.data().profitability}</h4>
-            <h4 style={{ width: '30%', color: '#3F4C67' }}>{thousandSeparator(item.data().invested)} {item.data().sign}</h4>
-            <h4 style={{ width: '25%', color: '#5161D4' }}>{thousandSeparator((item.data().invested * Number(item.data().profitability.slice(0, -1)) / 1200).toFixed(2))} {item.data().sign} / мес</h4>
-        </div>
+        item.data().user === currentUser ?
+                item.data().status === "pending" ?
+                    <div className="myinvestments-container-item" key={i} onClick={() => showModal(item.data(), i)}>
+                        <h4 style={{ width: '25%', color: '#3F4C67' }}>{item.data().name}</h4>
+                        <h4 style={{ width: '20%', color: '#F2A04F' }}>{item.data().profitability}</h4>
+                        <h4 style={{ width: '30%', color: '#3F4C67' }}>{thousandSeparator(item.data().invested)} {item.data().sign}</h4>
+                        <h4 style={{ width: '25%', color: '#5161D4' }}>{thousandSeparator((item.data().invested * Number(item.data().profitability.slice(0, -1)) / 1200).toFixed(2))} {item.data().sign} / мес</h4>
+                    </div>
+                    :
+                    ''
+                :
+                ''
     )
+
+    useEffect(() => {
+        invest?.forEach(item =>
+            item.data().user === currentUser ?
+                setFlag(true)
+                :
+                // setFlag(flag)
+                ''
+        )
+    }, [])
 
     return (
         <div className="myinvestments">
@@ -139,7 +173,7 @@ function MyInvestments(props) {
                     <h4 style={{ width: '30%' }}>Вклад</h4>
                     <h4 style={{ width: '25%' }}>Прибыль</h4>
                 </div>
-                {investItems}
+                {flag ? investItems : <AddInvestBtn db={db} moment={moment} currentUser={currentUser} cash={cash} fetchCash={fetchCash} fetchInvest={fetchInvest} makeTransaction={makeTransaction} fetchTransaction={fetchTransaction} returnData={returnData} thousandSeparator={thousandSeparator}></AddInvestBtn>}
             </div>
             <Modal title={title} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null} >
                 <div className="payments">

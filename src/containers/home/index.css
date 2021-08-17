@@ -30,6 +30,27 @@
     display: none !important;
 }
 
+.site-layout-background {
+    overflow: scroll;
+}
+
+.site-layout-background::-webkit-scrollbar-track {
+    display: none;
+}
+
+.site-layout-background::-webkit-scrollbar {
+    display: none;
+}
+
+.site-layout-background::-webkit-scrollbar-thumb {
+    display: none;
+}
+
+.ant-message-custom-content {
+    display: flex !important;
+    align-items: center !important;
+}
+
 @media (max-width: 479px) {
     .home {
         display: none;
