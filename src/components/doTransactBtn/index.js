@@ -22,6 +22,8 @@ function DoTransactBtn(props) {
         amount: ``,
         sign: ``,
         converted_amount: ``,
+        converted_sign: ``,
+        comment: ``,
         user: currentUser,
     })
 
@@ -60,9 +62,9 @@ function DoTransactBtn(props) {
                         console.log("Document TO successfully updated!");
                     })
 
-                    makeTransaction({ ...history, amount: amount, converted_amount: amount * convert(currentCurrencyFrom?.data.value, currentCurrencyTo?.data.value).toFixed(6), sign: currentCurrencyTo?.data.sign })
+                    makeTransaction({ ...history, amount: amount, converted_amount: amount * convert(currentCurrencyFrom?.data.value, currentCurrencyTo?.data.value).toFixed(6), sign: currentCurrencyFrom?.data.sign, converted_sign: currentCurrencyTo?.data.sign, comment: `${currentCurrencyFrom.data.name} -> ${currentCurrencyTo.data.name}` })
                     setIsModalVisible(false);
-                    setHistory({ amount: ``, converted_amount: ``, sign: `` })
+                    setHistory({ amount: ``, converted_amount: ``, sign: ``, converted_sign: ``, comment: ``})
                     fetchTransaction()
                     fetchCash()
                     fetchCurrency()
@@ -80,13 +82,18 @@ function DoTransactBtn(props) {
                 })
 
                 db.collection("cash").doc(beneficiaryCard.cash).update({
-                    "invested": Number((db.collection("cash").doc(beneficiaryCard.cash).get()).data().invested) + Number(amount),
+                    "invested": Number(returnNeededData(beneficiaryCard.cash).data.invested) + Number(amount),
                 })
                 .then(() => {
                     console.log("Document FROM successfully updated!");
                 })
-                // console.log(getInvested(beneficiaryCard.cash))
+
+                makeTransaction({ type: 4, name: 'Перевод', date: moment().format("DD-MM-YYYY hh:mm:ss"), amount: Number(amount), sign: '₸', comment: `${beneficiaryCard.name} ${beneficiaryCard.surname}`, converted_amount: ``, user: currentUser })
+                makeTransaction({ type: 3, name: 'Поступление', date: moment().format("DD-MM-YYYY hh:mm:ss"), amount: Number(amount), sign: '₸', comment: `${currentCard.name} ${currentCard.surname}`, converted_amount: ``, user: beneficiaryCard.user })
+                setIsModalVisible(false);
+                fetchTransaction()
                 fetchCash()
+                success(`Перевод в ${beneficiaryCard.name} ${beneficiaryCard.surname} на сумму ${amount} ₸`)
             }
         }
     }
@@ -141,7 +148,6 @@ function DoTransactBtn(props) {
 
     const [currentCard, setCurrentCard] = useState()
     const [beneficiaryCard, setBeneficiaryCard] = useState()
-    const [beneficiaryInvested, setBeneficiaryInvested] = useState()
 
     const getCard = () => {
         card?.forEach(item =>
@@ -161,6 +167,16 @@ function DoTransactBtn(props) {
         )
     }
 
+    const returnNeededData = (doc) => {
+        for (let i in cash) {
+            if (cash[i].id == doc) {
+                if (cash[i].data().value == 0) {
+                    return { id: cash[i].id, data: cash[i].data(), name: 'cash' }
+                }
+            }
+        }
+    }
+
     function cardFormat(s) {
         return s?.toString().replace(/\d{4}(?=.)/g, '$& ');
     }
@@ -171,19 +187,7 @@ function DoTransactBtn(props) {
 
     useEffect(() => {
         getCard()
-
-        db.collection("cash").doc(beneficiaryCard?.cash).get().then((doc) => {
-            if (doc.exists) {
-                setBeneficiaryInvested(doc.data().invested);
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-        }).catch((error) => {
-            console.log("Error getting document:", error);
-        });
     }, [])
-    console.log(beneficiaryInvested)
 
     return (
         <>

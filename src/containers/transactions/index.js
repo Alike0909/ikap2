@@ -61,7 +61,7 @@ function Transactions(props) {
                 </div>
                 <div className="transaction-desc">
                     <h4>{thousandSeparator(item.data().amount)} {item.data().sign}</h4>
-                    <p>{thousandSeparator(item.data().converted_amount)}</p>
+                    <p>{thousandSeparator(item.data().converted_amount)} {item.data().converted_sign}</p>
                 </div>
             </div>
             :
